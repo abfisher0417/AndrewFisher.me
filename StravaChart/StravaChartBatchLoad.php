@@ -60,6 +60,7 @@ if ($result->num_rows > 0) {
 }
 
 $lastRefreshDateTime = new DateTime(($lastRefresh != null) ? $lastRefresh : $minStartDateTime, new DateTimeZone("UTC"));
+$lastRefreshDateTime->setTimeZone(new DateTimeZone("America/Los_Angeles"));
 $lastRefreshSeconds = $lastRefreshDateTime->getTimestamp();
 
 // Log that refresh begins
