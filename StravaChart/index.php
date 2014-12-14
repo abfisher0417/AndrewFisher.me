@@ -68,22 +68,22 @@ function deliver_error_response($code, $status, $message) {
 }
 
 // --- Process Request
-date_default_timezone_set("UTC");
+date_default_timezone_set("America/Los_Angeles");
 	
 $startInterval = $_GET['startInterval'];
 
 if (is_null($startInterval)
 	|| (!is_null($startInterval) && empty($startInterval))) {
-    $day = date('w');
-	$startInterval = date('Ymd', strtotime('-' . $day . ' days'));
+    $startInterval = new DateTime("Monday this week", new DateTimeZone("America/Los_Angeles"));
+	$startInterval = $startInterval->format('Ymd');
 }
 
 if (!$startDateTime = DateTime::createFromFormat('Ymd', $startInterval)) {
    	deliver_error_response(5, $api_response_code[5]['HTTP Response'], 'Error parsing startInterval. Must be a valid date in YYYYMMDD format.');
 }
 
-$nextWeek = DateTime::createFromFormat('Ymd', $startInterval, new DateTimeZone("UTC"))->modify('+7 days');
-$prevWeek = DateTime::createFromFormat('Ymd', $startInterval, new DateTimeZone("UTC"))->modify('-7 days');
+$nextWeek = DateTime::createFromFormat('Ymd', $startInterval, new DateTimeZone("America/Los_Angeles"))->modify('+7 days');
+$prevWeek = DateTime::createFromFormat('Ymd', $startInterval, new DateTimeZone("America/Los_Angeles"))->modify('-7 days');
 
 $response['curWeek'] = $startDateTime->format('M j, Y');
 $response['nextWeek'] = $nextWeek->format('Ymd');
@@ -106,7 +106,7 @@ if ($result->num_rows > 0) {
 	$i = 0;
     while ($row = $result->fetch_assoc()) {
     	$response['data'][$i]['type'] = $row['type'];
-    	$response['data'][$i]['day'] = DateTime::createFromFormat('Ymd', $row['startDate'], new DateTimeZone("UTC"))->format('l');
+    	$response['data'][$i]['day'] = DateTime::createFromFormat('Ymd', $row['startDate'], new DateTimeZone("America/Los_Angeles"))->format('l');
     	$response['data'][$i]['duration'] = intval($row['duration']);
     	$response['data'][$i]['distance'] = round($row['distance'] * 0.000621371192, 1); // Convert meters to miles
     	$i++;
